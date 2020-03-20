@@ -10,7 +10,10 @@
          -->
       <head>
          <meta charset="UTF-8">
-         <title>Epedemic Simulation Tool</title>
+         <!-- <meta name="viewport" content="width=device-width, initial-scale=0.3, maximum-scale=0.3, user-scalable=0"/>--> 
+         <meta name="viewport" content="width=device-width, initial-scale=0.37, minimum-scale=0.37"/>
+         <!-- <meta name="viewport" content="width=1000px, initial-scale=1"/>--> 
+         <title>Pandemic in a box</title>
          <!-- 
             The javascript source file is executed right now. After execution of the javascript
             source file the fucntion and variables are available in the rest of 
@@ -51,7 +54,7 @@
                   <!-- 
                      The input element reads data into javascript. 
                      -->
-                  <input type="number" id="nParticles" value=130> 
+                  <input type="number" id="nParticles" value=300> 
                   <br>
                   <span> Radius of particles ranges from </span> 
                   <input type="number" id="minRadius" value=3> 
@@ -69,11 +72,11 @@
                </div>
                <div id="data">
                   <h4> Current status </h4>
-                  <span> Number of virgins : </span>
+                  <span> Number of uninfected : </span>
                   <!-- 
                      The output element shows values from javascript. 
                      -->
-                  <output id="virgins" class="outputClass"></output><br>
+                  <output id="uninfected" class="outputClass"></output><br>
                   <span> Number of infected : </span>
                   <output id="infected" class="outputClass"></output><br>
                   <span> Number of survivors : </span>

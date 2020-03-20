@@ -6,7 +6,7 @@ Declare global variables.
 let canvas;           // the HTML element containing the billiard canvas
 let canvasGraph;      // the HTML element containing the graph canvas
 let panel;            // the HTML element containing full top-left panel
-let virginsOutput;    // output HTML element
+let uninfectedOutput;    // output HTML element
 let infectedOutput;   // output HTML element 
 let survivorsOutput;  // output HTML element 
 let deathsOutput;     // output HTML element
@@ -26,7 +26,7 @@ let deathRate;
 
 // Data Arrays
 let timeArray;
-let virginsArray;
+let uninfectedArray;
 let infectedArray;
 let survivorsArray;
 let deathsArray;
@@ -46,7 +46,7 @@ let animationID;
 
 // Skip frames when drawing the Graph 
 let counterGraph = 0;
-let skipRateGraph = 2;
+let skipRateGraph = 1;
 
 // Definition of Particle Class
 class Particle {
@@ -79,10 +79,10 @@ class Particle {
     }
 
     // Update the state of the particle
-    // state=1 : virgin
+    // state=1 : uninfected
     // state=2 : infected
     // state=3 : survivor
-    // state=4 : virgin
+    // state=4 : dead
     updateState(deltaT) {
         let currentTime = new Date
 
@@ -211,7 +211,7 @@ function init() {
     canvasGraph = document.getElementById('canvasGraph');
     panel = document.getElementById('panel');
 
-    virginsOutput = document.getElementById('virgins');
+    uninfectedOutput = document.getElementById('uninfected');
     infectedOutput = document.getElementById('infected');
     survivorsOutput = document.getElementById('survivors');
     deathsOutput = document.getElementById('deaths');
@@ -251,7 +251,7 @@ function init() {
 
     // Initialize the data arrays containing the data points.
     timeArray = [];
-    virginsArray = [];
+    uninfectedArray = [];
     infectedArray = [];
     survivorsArray = [];
     deathsArray = [];
@@ -332,21 +332,29 @@ function renderFrame(deltaT) {
     }
 
     // Calculate the current status and remove dead particles
-    nVirgins = 0;
+    nUninfected = 0;
     nInfected = 0;
     nSurvivors = 0;
+
+    let toBeRemoved = []
+
     for (let i = 0; i < particleArray.length; i++) {
         if (particleArray[i].state == 1) {
-            nVirgins++
+            nUninfected += 1
         } else if (particleArray[i].state == 2) {
-            nInfected++
+            nInfected += 1
         } else if (particleArray[i].state == 3) {
-            nSurvivors++
+            nSurvivors += 1
         } else if (particleArray[i].state == 4) {
-            // Remove dead particles from the particleArray.
-            particleArray.splice(i, 1);
+            toBeRemoved.push(i)
         }
     }
+
+    // Remove dead particles from the particleArray.
+    for (let i = 0; i < toBeRemoved.length; i++) {
+        particleArray.splice(toBeRemoved[i], 1);
+    }
+
     nDeaths = nParticles - particleArray.length;
 
     // Update the velocities according to interparticle collision
@@ -359,7 +367,7 @@ function renderFrame(deltaT) {
     }
 
     // Show current status in HTML output elements
-    virginsOutput.value = nVirgins
+    uninfectedOutput.value = nUninfected
     infectedOutput.value = nInfected
     survivorsOutput.value = nSurvivors
     deathsOutput.value = nDeaths
@@ -377,7 +385,7 @@ function plot() {
 
     // fill data arrays
     timeArray.push(time);
-    virginsArray.push(nVirgins);
+    uninfectedArray.push(nUninfected);
     infectedArray.push(nInfected);
     survivorsArray.push(nSurvivors);
     deathsArray.push(nDeaths);
@@ -388,11 +396,11 @@ function plot() {
     // draw the axes
     drawAxes()
 
-    // draw the virgins
+    // draw the uninfected
     ctxGraph.beginPath();
     ctxGraph.strokeStyle = "purple";
     ctxGraph.lineWidth = 3;
-    drawGraph(timeArray, virginsArray)
+    drawGraph(timeArray, uninfectedArray)
     ctxGraph.stroke();
 
     // draw the infected
