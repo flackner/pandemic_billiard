@@ -161,7 +161,7 @@ input {
 #speed {
     width: 5em;
 }
-#incubTime {
+#recoverTime {
     width: 5em;
 }
 #deathRate {
@@ -177,7 +177,7 @@ Output style setting
     font-size: 24px;
 }
 
-#virgins {
+#uninfected {
     color: purple;
 }
 
@@ -185,7 +185,7 @@ Output style setting
     color: red;
 }
 
-#survivors {
+#recovered {
     color: green;
 }
 

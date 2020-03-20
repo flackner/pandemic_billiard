@@ -8,7 +8,7 @@ let canvasGraph;      // the HTML element containing the graph canvas
 let panel;            // the HTML element containing full top-left panel
 let uninfectedOutput;    // output HTML element
 let infectedOutput;   // output HTML element 
-let survivorsOutput;  // output HTML element 
+let recoveredOutput;  // output HTML element 
 let deathsOutput;     // output HTML element
 
 // canvas contexts
@@ -20,7 +20,7 @@ let nParticles;
 let minRadius;
 let maxRadius;
 let speed;
-let incubTime;
+let recoverTime;
 let caseFatality;
 let deathRate;
 
@@ -28,7 +28,7 @@ let deathRate;
 let timeArray;
 let uninfectedArray;
 let infectedArray;
-let survivorsArray;
+let recoveredArray;
 let deathsArray;
 
 // Particle Array containing the particles
@@ -46,7 +46,7 @@ let animationID;
 
 // Skip frames when drawing the Graph 
 let counterGraph = 0;
-let skipRateGraph = 1;
+let skipRateGraph = 2;
 
 // Definition of Particle Class
 class Particle {
@@ -81,19 +81,19 @@ class Particle {
     // Update the state of the particle
     // state=1 : uninfected
     // state=2 : infected
-    // state=3 : survivor
+    // state=3 : recovered
     // state=4 : dead
     updateState(deltaT) {
         let currentTime = new Date
 
         if (this.state == 2) {
-            // let percentDone = (currentTime - this.startTime) / incubTime
+            // let percentDone = (currentTime - this.startTime) / recoverTime
             // if (Math.random() < 2 * percentDone * deathRate * deltaT) {
             if (Math.random() < deathRate * deltaT) {
                 this.state = 4
                 return
             }
-            if (currentTime - this.startTime > incubTime) {
+            if (currentTime - this.startTime > recoverTime) {
                 this.state = 3
                 return
             }
@@ -213,7 +213,7 @@ function init() {
 
     uninfectedOutput = document.getElementById('uninfected');
     infectedOutput = document.getElementById('infected');
-    survivorsOutput = document.getElementById('survivors');
+    recoveredOutput = document.getElementById('recovered');
     deathsOutput = document.getElementById('deaths');
 
     // Get the input
@@ -221,9 +221,9 @@ function init() {
     minRadius = parseInt(document.getElementById('minRadius').value);
     maxRadius = parseInt(document.getElementById('maxRadius').value);
     speed = 0.01 * parseFloat(document.getElementById('speed').value);
-    incubTime = 1000 * parseFloat(document.getElementById('incubTime').value);
+    recoverTime = 1000 * parseFloat(document.getElementById('recoverTime').value);
     caseFatality = parseFloat(document.getElementById('caseFatality').value);
-    deathRate = -Math.log(1 - caseFatality) / incubTime
+    deathRate = -Math.log(1 - caseFatality) / recoverTime
 
     // setup canvas
     ctx = canvas.getContext('2d');
@@ -253,7 +253,7 @@ function init() {
     timeArray = [];
     uninfectedArray = [];
     infectedArray = [];
-    survivorsArray = [];
+    recoveredArray = [];
     deathsArray = [];
 
     // Initialize the particleArray containing the particle data.
@@ -334,7 +334,7 @@ function renderFrame(deltaT) {
     // Calculate the current status and remove dead particles
     nUninfected = 0;
     nInfected = 0;
-    nSurvivors = 0;
+    nRecovered = 0;
 
     let toBeRemoved = []
 
@@ -344,7 +344,7 @@ function renderFrame(deltaT) {
         } else if (particleArray[i].state == 2) {
             nInfected += 1
         } else if (particleArray[i].state == 3) {
-            nSurvivors += 1
+            nRecovered += 1
         } else if (particleArray[i].state == 4) {
             toBeRemoved.push(i)
         }
@@ -369,7 +369,7 @@ function renderFrame(deltaT) {
     // Show current status in HTML output elements
     uninfectedOutput.value = nUninfected
     infectedOutput.value = nInfected
-    survivorsOutput.value = nSurvivors
+    recoveredOutput.value = nRecovered
     deathsOutput.value = nDeaths
 
     // Plot the graph in the panel
@@ -387,7 +387,7 @@ function plot() {
     timeArray.push(time);
     uninfectedArray.push(nUninfected);
     infectedArray.push(nInfected);
-    survivorsArray.push(nSurvivors);
+    recoveredArray.push(nRecovered);
     deathsArray.push(nDeaths);
 
     // Clear graph canvas
@@ -410,11 +410,11 @@ function plot() {
     drawGraph(timeArray, infectedArray)
     ctxGraph.stroke();
 
-    // draw the survivors
+    // draw the recovered
     ctxGraph.beginPath();
     ctxGraph.strokeStyle = "green";
     ctxGraph.lineWidth = 3;
-    drawGraph(timeArray, survivorsArray)
+    drawGraph(timeArray, recoveredArray)
     ctxGraph.stroke();
 
     // draw the deaths
