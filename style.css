@@ -1,0 +1,193 @@
+/* 
+    CSS defines the desigy properties of the html content via the syntax:
+    selector {property: declarations;} 
+    Mind the semicolon!
+    A collection of all selectros and properties is given at:
+    https://www.w3schools.com/cssref/
+*/
+
+/* 
+    For selecting ALL HTML elements use: 
+    * {property: value;} 
+    e.g.
+    * {font-weight: bold;} 
+    to set the bold font globally
+
+    For selecting ALL HTML elements of tag "tag" use: 
+    tag {property: value;} 
+    e.g.
+    h1 {font-family: Arial, Helvetica, sans-serif;} 
+    to set the font for all h1 headings
+
+    For selecting the HTML element with "id=idName" use: 
+    #idName {property: value;} 
+    e.g.
+    #panel {width: 630px;} 
+    to set the width of the panel
+
+    For selecting ALL HTML elements in "class=className" use: 
+    .className {property: value;} 
+    e.g.
+    .outputClass {font-weight: bold;} 
+    to set the font in all tags in class "outputClass" to bold
+
+    For conditional selection use  
+    selector:conditional {property: declarations;} e.g.
+    button:hover {background-color: blue;} 
+    to make the button blue when the mouse currently hovers over it
+*/
+
+/* 
+General style setting    
+*/
+
+body {
+    /* 
+    First "Arial" is tried, 
+    if it is not installed a "Helvetica"-Type font is tried, 
+    if it does not exist any "sans-serif" font is chosen.
+    */
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    /* 
+    No slide bars are shown. If content is ouside the current window it is
+    just hidden.
+    */
+    overflow:hidden;
+}
+
+h4 {
+    margin-left: -10px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+/* 
+Panel style setting. The size of the left-upper panel is hardcoded here!
+*/
+
+#panel{
+    position: absolute; 
+    width: 630px;
+    height: 450px;
+}
+
+/* 
+The container allows to position the input and output section next to each other.
+*/
+#container{
+    display: flex;
+}
+
+#parameters{
+    margin-left: 30px;
+    width: 400px;
+}
+
+#data{
+    flex-grow: 1;
+}
+
+/* 
+Button style setting    
+*/
+
+button {
+    background-color: rgb(76, 175, 162); /* Green */
+    border: none;
+    color: white;
+    padding: 7px 16px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-weight: bold;
+    font-size: 16px;
+    border-radius: 4px;
+    margin-left: 30px;
+    margin-top: 8px;
+    margin-bottom: 0px;
+}
+
+button:hover {
+    background-color: rgb(27, 7, 97); /* Green */
+} 
+
+/* 
+Canvas style setting    
+*/
+
+#canvasGraph {
+    margin: 30px;
+    margin-left: 35px;
+}
+
+#xAxis{
+    position: absolute; 
+    top: 428px;
+    left: 300px;
+}
+
+#yAxis{
+    position: absolute; 
+    top: 350px;
+    left: 9px;
+    /* Rotate from top left corner (not default) */
+    transform-origin: 0 0;
+    transform: rotate(270deg);
+}
+
+/* 
+Input style setting    
+*/
+
+input {
+    background-color: rgb(206, 28, 138);
+    color: white;
+    font-weight: bold;
+    margin-top: 5px;
+    padding-left: 5px;
+}
+
+#nParticles {
+    width: 5em;
+}
+#minRadius {
+    width: 3em;
+} 
+#maxRadius {
+    width: 3em;
+}
+#speed {
+    width: 5em;
+}
+#incubTime {
+    width: 5em;
+}
+#deathRate {
+    width: 5em;
+}
+
+/* 
+Output style setting    
+*/
+
+.outputClass {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+#virgins {
+    color: purple;
+}
+
+#infected {
+    color: red;
+}
+
+#survivors {
+    color: green;
+}
+
+#deaths {
+    color: black;
+}

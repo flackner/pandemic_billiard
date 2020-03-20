@@ -1,0 +1,106 @@
+<!-- 
+   HTML is the markup language that defines the structure and the content of the page.
+   A HTML document starts with the <html> tag.
+   -->
+   <!DOCTYPE html>
+   <html>
+      <!-- 
+         Next comes the <head> tag which contains information about the page such as 
+         charset, title, java script file, css source file, author, keywords...
+         -->
+      <head>
+         <meta charset="UTF-8">
+         <title>Epedemic Simulation Tool</title>
+         <!-- 
+            The javascript source file is executed right now. After execution of the javascript
+            source file the fucntion and variables are available in the rest of 
+            the document. However be careful not to search for HTML elements at this point.
+            Since HTML elements are not defined at this point the script cannot find them!
+            Once all HTML elements are loaded the function window.onload executes. By assining 
+            "window.onload = init" the javascript function init is executed once the page is fully 
+            loaded and initiates further actions
+            -->
+         <script src="canvas.js"></script>
+         <!-- 
+             CSS is the style sheet language that defines the design (look, layout) of the page 
+            -->
+         <link href="style.css" rel="stylesheet" type="text/css">
+         <!-- 
+            Include external libraries. Probably using D3 gives MUCH nicer visualisation!
+            -->
+         <!-- <script src="https://d3js.org/d3.v5.min.js"></script> -->
+      </head>
+      <!-- 
+         Next comes the <body> tag which contains the content of the page. Tags can be 
+         styled with the CSS file. To identify a specific tag either "id=" or "class=" can be used.
+         IDs can only be used for one tag, while CLASSES can be used for several tags.
+         -->
+      <body>
+         <!-- 
+            The canvas element is the screen where all the animations happen.
+            -->
+         <canvas id="canvasBilliard"></canvas>
+         <!-- 
+            The div element is just a grouping element that groups elements together.
+            -->
+         <div id="panel">
+            <div id="container">
+               <div id="parameters">
+                  <h4> Input parameters </h4>
+                  <span> Initial number of particles is </span> 
+                  <!-- 
+                     The input element reads data into javascript. 
+                     -->
+                  <input type="number" id="nParticles" value=130> 
+                  <br>
+                  <span> Radius of particles ranges from </span> 
+                  <input type="number" id="minRadius" value=3> 
+                  <span> to </span> 
+                  <input type="number" id="maxRadius" value=16> 
+                  <br>
+                  <span> Speed of particles is </span> 
+                  <input type="number" id="speed" value=9> 
+                  <br>
+                  <span> Incumbation time in seconds is </span> 
+                  <input type="number" id="incubTime" value=10> 
+                  <br>
+                  <span> Case fatality rate is </span>
+                  <input type="number" id="caseFatality" value=0.1 min="0" max="1"><br>
+               </div>
+               <div id="data">
+                  <h4> Current status </h4>
+                  <span> Number of virgins : </span>
+                  <!-- 
+                     The output element shows values from javascript. 
+                     -->
+                  <output id="virgins" class="outputClass"></output><br>
+                  <span> Number of infected : </span>
+                  <output id="infected" class="outputClass"></output><br>
+                  <span> Number of survivors : </span>
+                  <output id="survivors" class="outputClass"></output><br>
+                  <span> Number of deaths : </span>
+                  <output id="deaths" class="outputClass"></output><br>
+               </div>
+            </div>
+            <!-- 
+               The button element executes javascript functions on click.
+               -->
+            <div id="buttons">
+               <button onclick="restartAnimation()">Restart simulation</button>
+               <button onclick="stopAnimation()">Stop simulation</button>
+               <button onclick="resumeAnimation()">Resume simulation</button>
+            </div>
+            <!-- 
+               Another canvas element shows the Graph. The Graph is implemented with
+               vanilla javascript (without libraries). Probably libraries lead to mush prettier 
+               Graphs!
+               -->
+            <canvas id="canvasGraph"></canvas>
+            <!-- 
+               Axes names are repositioned in the CSS
+               -->
+            <span id="xAxis"> time </span>
+            <span id="yAxis"> status </span>
+         </div>
+      </body>
+   </html>
