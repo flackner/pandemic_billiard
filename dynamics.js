@@ -48,6 +48,14 @@ let animationID;
 let counterGraph = 0;
 let skipRateGraph = 2;
 
+// determines if the canvas size is updated dynamically 
+// when the window is resized
+let updateCanvasSize;
+
+// The original size of window when page was loaded.
+let originalWidth;
+let originalHeight;
+
 // Definition of Particle Class
 class Particle {
 
@@ -198,9 +206,25 @@ function detectCollisions() {
 }
 
 // The window.onload fucntion is a callback function that is called as soon the 
-// window is fully loaded. By assigning window.onload to the javascript function 'init'
-// this function 'init' is called as soon as the window is fully loaded.
-window.onload = init;
+// window is fully loaded. By assigning window.onload to a (in this case unnamed) 
+// javascript function this function is called as soon as the window is fully loaded.
+window.onload = function () {
+
+    // save the original size which is needed for support of mobile browsers
+    originalHeight = window.innerHeight;
+    originalWidth = window.innerWidth;
+
+    // If mobile device is used the canvas is not dynamically updated
+    if (isTouchDevice()) {
+        updateCanvasSize = false
+        // The viewport meta-tag sets up the presentation on mobile devices
+        let viewport = document.querySelector("meta[name=viewport]");
+        viewport.setAttribute("content", "height=" + originalHeight + "px, width=" + originalWidth + "px, initial-scale=0.8");
+    } else {
+        updateCanvasSize = true
+    }
+    init();
+}
 
 // The function 'init' is the entry point for setting up the javascript canvas and starting the 
 // animation as well as logging data to screen
@@ -230,11 +254,17 @@ function init() {
     ctxGraph = canvasGraph.getContext('2d');
 
     // Set the canvas size equal to the window size. This means that the billiard canvas 
-    // is the full window size! 
-    canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
-    //alternative: canvas.width = document.documentElement.clientWidth;
-    //alternative: canvas.height = document.documentElement.clientHeight;
+    // is the full window size! For mobile browsers selecting the text input fields will 
+    // bring up the soft keyboard. This also causes the window size to change which leads to
+    // an unwanted resizing of the billiard canvas. Therefore for mobile browsers the original 
+    // window size is used here.
+    if (!updateCanvasSize) {
+        canvas.width = originalWidth
+        canvas.height = originalHeight
+    } else {
+        canvas.width = window.innerWidth
+        canvas.height = window.innerHeight
+    }
 
     // Set the graph canvas size in realation to the pannel size.
     canvasGraph.width = panel.clientWidth * 0.9;
@@ -306,9 +336,13 @@ function renderFrame(deltaT) {
     // current time
     time += deltaT
 
-    // Update canvas size if window size changes
-    canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
+    // Update canvas size if window is resized. This leads to the nice effect
+    // that the window boundary is always the billiard boundary. In case of mobile
+    // browsers the window is not resized usually so this feature is disabled
+    if (updateCanvasSize) {
+        canvas.width = window.innerWidth
+        canvas.height = window.innerHeight
+    }
 
     // Update panel position if window size changes
     panel.style.top = 0 + "px";
@@ -504,10 +538,23 @@ function stopAnimation() {
 // Called when pressing the restart buttom
 function restartAnimation() {
     cancelAnimationFrame(animationID)
-    init()
+    init();
 }
 
 // Called when pressing the resume buttom
 function resumeAnimation() {
     startAnimation()
 }
+
+// reload the whole page again from server if the orientation of 
+// the mobile device changes
+window.addEventListener("orientationchange", function () {
+    window.location.reload(true); 
+});
+
+// Detect mobile browsers. Got it from here:
+// https://stackoverflow.com/questions/4817029/whats-the-best-way-to-detect-a-touch-screen-device-using-javascript/4819886#4819886
+function isTouchDevice() {
+    return !!('ontouchstart' in window        // works on most browsers 
+        || navigator.maxTouchPoints);       // works on IE10/11 and Surface
+};
