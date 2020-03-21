@@ -10,10 +10,18 @@
          -->
       <head>
          <meta charset="UTF-8">
-         <!-- <meta name="viewport" content="width=device-width, initial-scale=0.3, maximum-scale=0.3, user-scalable=0"/>--> 
-         <!-- <meta name="viewport" content="width=device-width, initial-scale=0.37, minimum-scale=0.37"/> -->
-         <!-- <meta name="viewport" content="width=1000px, initial-scale=1"/>--> 
+
+         <!--
+            I still have trouble understanding the viewport. I quess it is the visible area in a browser measured
+            in real physical units of 1/96 inch = 1 px. Many of the dimensions set in the CSS file are in 
+            px unites which means that the physical size is hardcoded. This of course is not very good. Probably 
+            implementation using relative units sich as % and vw would be better. Another problem with the viewport is
+            that it can change when the virtual keyboard is activeted. To keep the viewport fixed the size is fixed
+            via javascript. In javascript the size of the viewport is accessible via window.innerWidth and 
+            window.innerHeight. 
+         --> 
          <meta name="viewport"/>
+         
          <title>Pandemic in a box</title>
          <!-- 
             The javascript source file is executed right now. After execution of the javascript

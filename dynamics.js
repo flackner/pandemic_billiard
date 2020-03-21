@@ -210,19 +210,29 @@ function detectCollisions() {
 // javascript function this function is called as soon as the window is fully loaded.
 window.onload = function () {
 
-    // save the original size which is needed for support of mobile browsers
-    originalHeight = window.innerHeight;
-    originalWidth = window.innerWidth;
-
     // If mobile device is used the canvas is not dynamically updated
     if (isTouchDevice()) {
         updateCanvasSize = false
-        // The viewport meta-tag sets up the presentation on mobile devices
+        // The viewport meta-tag sets up the size of the visible area in the browser.
+        // is the viewport is too small to accomodate HTML elements with fixed size (given in px)
+        // a scrollbar will be present. When overflow:hidden is defined the overflowing content
+        // is hidden. In this webpage the panel has fixed size as defined in the CSS file which causes
+        // overflowing if the the viewport is too small as in mobile devices. To avoid this we set 
+        // initial-scale=0.4 and minimum-scale=0.4 so that the page loads with everything being 60%
+        // smaller. This means if the panel is defined as 620px = 6.46 inch = 16,41 cm in the CSS file. On 
+        // mobile devices it will be approximately 16,4 * 0.4 = 6.5 cm in size. 
         let viewport = document.querySelector("meta[name=viewport]");
-        viewport.setAttribute("content", "height=" + originalHeight + "px, width=" + originalWidth + "px, initial-scale=0.8");
+        viewport.setAttribute("content", "height=" + window.innerHeight + "px, width=" + window.innerWidth + "px, "
+        + "initial-scale=0.4, minimum-scale=0.4");
+
     } else {
         updateCanvasSize = true
     }
+
+    // save the original size which is needed to restart with the correct size on mobile devices
+    originalHeight = window.innerHeight;
+    originalWidth = window.innerWidth;
+
     init();
 }
 

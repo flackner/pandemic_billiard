@@ -22,7 +22,7 @@
     For selecting the HTML element with "id=idName" use: 
     #idName {property: value;} 
     e.g.
-    #panel {width: 630px;} 
+    #panel {width: 630vw;} 
     to set the width of the panel
 
     For selecting ALL HTML elements in "class=className" use: 
