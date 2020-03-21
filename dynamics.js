@@ -22,6 +22,7 @@ let maxRadius;
 let speed;
 let recoverTime;
 let caseFatality;
+let immunityDuration;
 let deathRate;
 
 // Data Arrays
@@ -103,9 +104,16 @@ class Particle {
             }
             if (currentTime - this.startTime > recoverTime) {
                 this.state = 3
+		this.startTime = currentTime
                 return
             }
         }
+	if (this.state == 3){
+	    if (currentTime - this.startTime > immunityDuration){
+		this.state = 1
+		return
+	    }
+	}
     }
 
     // Move particle according to velocity and boundary conditions
@@ -257,6 +265,7 @@ function init() {
     speed = 0.01 * parseFloat(document.getElementById('speed').value);
     recoverTime = 1000 * parseFloat(document.getElementById('recoverTime').value);
     caseFatality = parseFloat(document.getElementById('caseFatality').value);
+    immunityDuration = 1000 * parseFloat(document.getElementById('immunityduration').value);
     deathRate = -Math.log(1 - caseFatality) / recoverTime
 
     // setup canvas
