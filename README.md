@@ -1,4 +1,4 @@
-# pandemic_in_a_box
+# pandemic_billiard
 A toy simulation of a pandemic based on particles in a box.
 
 The HTML file, the CSS file and the Javascript file are commented a little bit. Have a look at them!
