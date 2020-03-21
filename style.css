@@ -62,14 +62,6 @@ h4 {
     margin-bottom: 5px;
 }
 
-a {
-    color: rgb(33, 20, 212);
-    font-weight: bold;
-    padding: 5px;
-    margin-left: 34px;
-    font-size: 16px;
-}
-
 /* 
 Panel style setting. The size of the left-upper panel is hardcoded here!
 */
@@ -119,6 +111,16 @@ button {
 button:hover {
     background-color: rgb(27, 7, 97); /* Green */
 } 
+
+#gitlink {
+    color: black;
+    font-weight: bold;
+    margin-left: 39px;
+}
+
+#gitlink:hover {
+    color: rgb(33, 20, 212);
+}
 
 /* 
 Canvas style setting    
