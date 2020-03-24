@@ -59,25 +59,26 @@
             <div id="container">
                <div id="parameters">
                   <h4> Input parameters </h4>
-                  <span> Initial number of particles is </span> 
+                  <span> Initial number of particles  </span> 
                   <!-- 
                      The input element reads data into javascript. 
                      -->
                   <input type="number" id="nParticles" value=380> 
                   <br>
-                  <span> Radius of particles ranges from </span> 
+                  <span> Particle radius from </span> 
                   <input type="number" id="minRadius" value=3.5> 
                   <span> to </span> 
                   <input type="number" id="maxRadius" value=13.5> 
                   <br>
-                  <span> Speed of particles is </span> 
+                  <span> Speed of particles [s] </span> 
                   <input type="number" id="speed" value=9.5> 
                   <br>
-                  <span> Recovery time in seconds is </span> 
+                  <span> Recovery time [s] </span> 
                   <input type="number" id="recoverTime" value=3.2> 
                   <br>
-                  <span> Case fatality rate is </span>
-                  <input type="number" id="caseFatality" value=0.04 min="0" max="1"><br>
+                  <span> Fatality rate </span>
+                  <input type="number" id="caseFatality" value=0.04 min="0" max="1">
+		  <br>
                </div>
                <div id="data">
                   <a id="gitlink" href="https://github.com/flackner/pandemic_billiard">Link to github repo here</a>
@@ -92,7 +93,9 @@
                   <span> Number of recovered : </span>
                   <output id="recovered" class="outputClass"></output><br>
                   <span> Number of deaths : </span>
-                  <output id="deaths" class="outputClass"></output>
+                  <output id="deaths" class="outputClass"></output><br>
+		  <span> Duration of Immunity [s] </span>
+                  <input type="number" id="immunityduration" value=3.>
                </div>
             </div>
             <!-- 
