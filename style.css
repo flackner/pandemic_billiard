@@ -56,12 +56,6 @@ body {
     overflow:hidden;
 }
 
-h4 {
-    margin-left: -10px;
-    margin-top: 10px;
-    margin-bottom: 5px;
-}
-
 /* 
 Panel style setting. The size of the left-upper panel is hardcoded here!
 */
@@ -77,14 +71,15 @@ The container allows to position the input and output section next to each other
 */
 #container{
     display: flex;
+    margin-top: 10px;
 }
 
-#parameters{
-    margin-left: 20px;
-    width: 380px;
+#parametersLeft{
+    margin-left: 40px;
+    width: 320px;
 }
 
-#data{
+#parametersRight{
     flex-grow: 1;
 }
 
@@ -104,7 +99,7 @@ button {
     font-size: 16px;
     border-radius: 4px;
     margin-left: 30px;
-    margin-top: 8px;
+    margin-top: 18px;
     margin-bottom: 0px;
 }
 
@@ -115,7 +110,9 @@ button:hover {
 #gitlink {
     color: black;
     font-weight: bold;
-    margin-left: 39px;
+    position: absolute; 
+    top: 427px;
+    left: 420px;
 }
 
 #gitlink:hover {
@@ -134,7 +131,7 @@ Canvas style setting
 
 #xAxis{
     position: absolute; 
-    top: 428px;
+    top: 423px;
     left: 300px;
 }
 
@@ -164,10 +161,10 @@ input {
     width: 5em;
 }
 #minRadius {
-    width: 3em;
+    width: 5em;
 } 
 #maxRadius {
-    width: 3em;
+    width: 5em;
 }
 #speed {
     width: 5em;
@@ -175,7 +172,13 @@ input {
 #recoverTime {
     width: 5em;
 }
-#deathRate {
+#immunityDuration {
+    width: 5em;
+}
+#fatalityRate {
+    width: 5em;
+}
+#initialConfinement {
     width: 5em;
 }
 
@@ -183,12 +186,18 @@ input {
 Output style setting    
 */
 
+#status {
+    margin-top: 15px;
+    margin-bottom: -5px;
+    margin-left: 40px;
+}
+
 .outputClass {
     font-weight: bold;
     font-size: 24px;
 }
 
-#uninfected {
+#susceptible {
     color: purple;
 }
 
@@ -196,7 +205,7 @@ Output style setting
     color: red;
 }
 
-#recovered {
+#immune {
     color: green;
 }
 

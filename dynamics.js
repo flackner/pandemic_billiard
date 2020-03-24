@@ -6,9 +6,9 @@ Declare global variables.
 let canvas;           // the HTML element containing the billiard canvas
 let canvasGraph;      // the HTML element containing the graph canvas
 let panel;            // the HTML element containing full top-left panel
-let uninfectedOutput;    // output HTML element
+let susceptibleOutput;    // output HTML element
 let infectedOutput;   // output HTML element 
-let recoveredOutput;  // output HTML element 
+let immuneOutput;  // output HTML element 
 let deathsOutput;     // output HTML element
 
 // canvas contexts
@@ -21,15 +21,15 @@ let minRadius;
 let maxRadius;
 let speed;
 let recoverTime;
-let caseFatality;
+let fatalityRate;
 let immunityDuration;
 let deathRate;
 
 // Data Arrays
 let timeArray;
-let uninfectedArray;
+let susceptibleArray;
 let infectedArray;
-let recoveredArray;
+let immuneArray;
 let deathsArray;
 
 // Particle Array containing the particles
@@ -69,6 +69,8 @@ class Particle {
         this.radius = radius;
         this.id = id;
         this.state = 1;
+        this.timeAtInfection = undefined;
+        this.timeAtRecovery = undefined;
     }
 
     // Draw the Particle on screen
@@ -88,32 +90,32 @@ class Particle {
     }
 
     // Update the state of the particle
-    // state=1 : uninfected
+    // state=1 : susceptible
     // state=2 : infected
-    // state=3 : recovered
+    // state=3 : immune
     // state=4 : dead
     updateState(deltaT) {
         let currentTime = new Date
 
         if (this.state == 2) {
-            // let percentDone = (currentTime - this.startTime) / recoverTime
+            // let percentDone = (currentTime - this.timeAtInfection) / recoverTime
             // if (Math.random() < 2 * percentDone * deathRate * deltaT) {
             if (Math.random() < deathRate * deltaT) {
                 this.state = 4
                 return
             }
-            if (currentTime - this.startTime > recoverTime) {
+            if (currentTime - this.timeAtInfection > recoverTime) {
                 this.state = 3
-		this.startTime = currentTime
+                this.timeAtRecovery = currentTime
                 return
             }
         }
-	if (this.state == 3){
-	    if (currentTime - this.startTime > immunityDuration){
-		this.state = 1
-		return
-	    }
-	}
+        if (this.state == 3) {
+            if (currentTime - this.timeAtRecovery > immunityDuration) {
+                this.state = 1
+                return
+            }
+        }
     }
 
     // Move particle according to velocity and boundary conditions
@@ -186,10 +188,10 @@ function detectCollisions() {
 
             if (particleArray[i2].state == 2 && particleArray[i1].state == 1) {
                 particleArray[i1].state = 2
-                particleArray[i1].startTime = new Date
+                particleArray[i1].timeAtInfection = new Date
             } else if (particleArray[i2].state == 1 && particleArray[i1].state == 2) {
                 particleArray[i2].state = 2
-                particleArray[i2].startTime = new Date
+                particleArray[i2].timeAtInfection = new Date
             }
 
             dvx = (particleArray[i1].vx - particleArray[i2].vx)
@@ -231,7 +233,7 @@ window.onload = function () {
         // mobile devices it will be approximately 16,4 * 0.4 = 6.5 cm in size. 
         let viewport = document.querySelector("meta[name=viewport]");
         viewport.setAttribute("content", "height=" + window.innerHeight + "px, width=" + window.innerWidth + "px, "
-        + "initial-scale=0.4, minimum-scale=0.4");
+            + "initial-scale=0.4, minimum-scale=0.4");
 
     } else {
         updateCanvasSize = true
@@ -253,20 +255,21 @@ function init() {
     canvasGraph = document.getElementById('canvasGraph');
     panel = document.getElementById('panel');
 
-    uninfectedOutput = document.getElementById('uninfected');
+    susceptibleOutput = document.getElementById('susceptible');
     infectedOutput = document.getElementById('infected');
-    recoveredOutput = document.getElementById('recovered');
+    immuneOutput = document.getElementById('immune');
     deathsOutput = document.getElementById('deaths');
 
     // Get the input
     nParticles = parseInt(document.getElementById('nParticles').value);
     minRadius = parseInt(document.getElementById('minRadius').value);
     maxRadius = parseInt(document.getElementById('maxRadius').value);
-    speed = 0.01 * parseFloat(document.getElementById('speed').value);
-    recoverTime = 1000 * parseFloat(document.getElementById('recoverTime').value);
-    caseFatality = parseFloat(document.getElementById('caseFatality').value);
-    immunityDuration = 1000 * parseFloat(document.getElementById('immunityduration').value);
-    deathRate = -Math.log(1 - caseFatality) / recoverTime
+    speed = 0.00264 * parseFloat(document.getElementById('speed').value); // should be millimeter per second
+    recoverTime = 1000 * parseFloat(document.getElementById('recoverTime').value); // seconds
+    fatalityRate = parseFloat(document.getElementById('fatalityRate').value); // percent
+    immunityDuration = 1000 * parseFloat(document.getElementById('immunityDuration').value); // seconds
+    initialConfinement = parseFloat(document.getElementById('initialConfinement').value); // percent
+    deathRate = -Math.log(1 - fatalityRate / 100) / recoverTime
 
     // setup canvas
     ctx = canvas.getContext('2d');
@@ -300,9 +303,9 @@ function init() {
 
     // Initialize the data arrays containing the data points.
     timeArray = [];
-    uninfectedArray = [];
+    susceptibleArray = [];
     infectedArray = [];
-    recoveredArray = [];
+    immuneArray = [];
     deathsArray = [];
 
     // Initialize the particleArray containing the particle data.
@@ -310,14 +313,15 @@ function init() {
     for (let i = 0; i < nParticles; i++) {
         let radius = minRadius + Math.random() * (maxRadius - minRadius);
 
-        let x = canvas.width
-        let y = 0
+        let x;
+        let y;
+        let scale = 1 - initialConfinement / 100;
 
         // Retry as long as the particle is inside the panel.
-        while ((x + radius > canvas.width - xCut && y - radius < yCut)) {
-            x = radius + Math.random() * (canvas.width - 2 * radius);
-            y = radius + Math.random() * (canvas.height - 2 * radius);
-        }
+        do {
+            x = radius + Math.random() * (canvas.width * scale - 2 * radius);
+            y = radius + Math.random() * (canvas.height * scale - 2 * radius);
+        } while (x + radius > canvas.width - xCut && y - radius < yCut);
 
         let vx = speed * 2 * (Math.random() - 0.5);
         let vy = speed * 2 * (Math.random() - 0.5);
@@ -327,7 +331,7 @@ function init() {
 
     // Put the first particle into infected state at current time.
     particleArray[0].state = 2;
-    particleArray[0].startTime = new Date;
+    particleArray[0].timeAtInfection = new Date;
 
     // This call starts the animation loop!
     startAnimation();
@@ -385,19 +389,19 @@ function renderFrame(deltaT) {
     }
 
     // Calculate the current status and remove dead particles
-    nUninfected = 0;
+    nSusceptible = 0;
     nInfected = 0;
-    nRecovered = 0;
+    nImmune = 0;
 
     let toBeRemoved = []
 
     for (let i = 0; i < particleArray.length; i++) {
         if (particleArray[i].state == 1) {
-            nUninfected += 1
+            nSusceptible += 1
         } else if (particleArray[i].state == 2) {
             nInfected += 1
         } else if (particleArray[i].state == 3) {
-            nRecovered += 1
+            nImmune += 1
         } else if (particleArray[i].state == 4) {
             toBeRemoved.push(i)
         }
@@ -420,9 +424,9 @@ function renderFrame(deltaT) {
     }
 
     // Show current status in HTML output elements
-    uninfectedOutput.value = nUninfected
+    susceptibleOutput.value = nSusceptible
     infectedOutput.value = nInfected
-    recoveredOutput.value = nRecovered
+    immuneOutput.value = nImmune
     deathsOutput.value = nDeaths
 
     // Plot the graph in the panel
@@ -438,9 +442,9 @@ function plot() {
 
     // fill data arrays
     timeArray.push(time);
-    uninfectedArray.push(nUninfected);
+    susceptibleArray.push(nSusceptible);
     infectedArray.push(nInfected);
-    recoveredArray.push(nRecovered);
+    immuneArray.push(nImmune);
     deathsArray.push(nDeaths);
 
     // Clear graph canvas
@@ -449,11 +453,11 @@ function plot() {
     // draw the axes
     drawAxes()
 
-    // draw the uninfected
+    // draw the susceptible
     ctxGraph.beginPath();
     ctxGraph.strokeStyle = "purple";
     ctxGraph.lineWidth = 3;
-    drawGraph(timeArray, uninfectedArray)
+    drawGraph(timeArray, susceptibleArray)
     ctxGraph.stroke();
 
     // draw the infected
@@ -463,11 +467,11 @@ function plot() {
     drawGraph(timeArray, infectedArray)
     ctxGraph.stroke();
 
-    // draw the recovered
+    // draw the immune
     ctxGraph.beginPath();
     ctxGraph.strokeStyle = "green";
     ctxGraph.lineWidth = 3;
-    drawGraph(timeArray, recoveredArray)
+    drawGraph(timeArray, immuneArray)
     ctxGraph.stroke();
 
     // draw the deaths
@@ -568,7 +572,7 @@ function resumeAnimation() {
 // reload the whole page again from server if the orientation of 
 // the mobile device changes
 window.addEventListener("orientationchange", function () {
-    window.location.reload(true); 
+    window.location.reload(true);
 });
 
 // Detect mobile browsers. Got it from here:

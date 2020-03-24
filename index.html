@@ -57,45 +57,34 @@
             -->
          <div id="panel">
             <div id="container">
-               <div id="parameters">
-                  <h4> Input parameters </h4>
-                  <span> Initial number of particles  </span> 
+               <div id="parametersLeft">
                   <!-- 
                      The input element reads data into javascript. 
                      -->
                   <input type="number" id="nParticles" value=380> 
+                  <span> Initial particle number  </span> 
                   <br>
-                  <span> Particle radius from </span> 
                   <input type="number" id="minRadius" value=3.5> 
-                  <span> to </span> 
+                  <span> Minimal particle radius </span>
+                  <br>
                   <input type="number" id="maxRadius" value=13.5> 
+                  <span> Maximal particle radius </span>  
                   <br>
-                  <span> Speed of particles [s] </span> 
-                  <input type="number" id="speed" value=9.5> 
-                  <br>
-                  <span> Recovery time [s] </span> 
-                  <input type="number" id="recoverTime" value=3.2> 
-                  <br>
-                  <span> Fatality rate </span>
-                  <input type="number" id="caseFatality" value=0.04 min="0" max="1">
-		  <br>
+                  <input type="number" id="speed" value=35.8> 
+                  <span> Particle speed [mm/s] </span> 
                </div>
-               <div id="data">
-                  <a id="gitlink" href="https://github.com/flackner/pandemic_billiard">Link to github repo here</a>
-                  <h4> Current status </h4>
-                  <span> Number of uninfected : </span>
-                  <!-- 
-                     The output element shows values from javascript. 
-                     -->
-                  <output id="uninfected" class="outputClass"></output><br>
-                  <span> Number of infected : </span>
-                  <output id="infected" class="outputClass"></output><br>
-                  <span> Number of recovered : </span>
-                  <output id="recovered" class="outputClass"></output><br>
-                  <span> Number of deaths : </span>
-                  <output id="deaths" class="outputClass"></output><br>
-		  <span> Duration of Immunity [s] </span>
-                  <input type="number" id="immunityduration" value=3.>
+               <div id="parametersRight">
+                  <input type="number" id="recoverTime" value=3.2>
+                  <span> Recovery time [s] </span>  
+                  <br>
+                  <input type="number" id="immunityDuration" value=100.0>
+                  <span> Immunity duration [s] </span>
+                  <br>
+                  <input type="number" id="fatalityRate" value=4 min=0 max=100>
+                  <span> Fatality rate [%] </span>
+                  <br>
+                  <input type="number" id="initialConfinement" value=0 min=0 max=100>
+                  <span> Initial confinement [%] </span>
                </div>
             </div>
             <!-- 
@@ -105,6 +94,17 @@
                <button onclick="restartAnimation()">Restart simulation</button>
                <button onclick="stopAnimation()">Stop simulation</button>
                <button onclick="resumeAnimation()">Resume simulation</button>
+            </div>
+            <div id="status">
+               <span> Current status : </span>
+               <output id="susceptible" class="outputClass"></output>
+               <span> susceptible &nbsp;&nbsp;</span> 
+               <output id="infected" class="outputClass"></output>
+               <span> infected &nbsp;&nbsp;</span>
+               <output id="immune" class="outputClass"></output>
+               <span> immune &nbsp;&nbsp;</span>
+               <output id="deaths" class="outputClass"></output>
+               <span> dead</span> <br>
             </div>
             <!-- 
                Another canvas element shows the Graph. The Graph is implemented with
@@ -117,6 +117,10 @@
                -->
             <span id="xAxis"> time </span>
             <span id="yAxis"> status </span>
+            <!-- 
+               Link to github repo
+               -->
+            <a id="gitlink" href="https://github.com/flackner/pandemic_billiard">Link to github repo here</a>
          </div>
       </body>
    </html>
